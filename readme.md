@@ -1,3 +1,46 @@
+# Balatro-VST
+
+> Original README below
+
+This is a hacked up version of the LÖVE framework allowing to load LÖVE games as a VST, and most notably the hit game [Balatro](https://www.playbalatro.com). The project is based on the [CPLUG](https://github.com/Tremus/CPLUG) wrapper and the example file that comes with it.
+
+**I do not take any responsibility for this crashing your DAW, corrupting your project, or drastically reducing your productivity. Use this at your own risk!**
+
+As this was mostly made as a proof of concept and for [shitposting purposes](https://twitter.com/dialgadu77/status/1869444443721617510), this comes with a few (?) caveats:
+- Only one instance per project
+- Does not work on Ableton (you can use a VST wrapper such as [Element](https://kushview.net/element/) to make it work though)
+- Audio does not go through the DAW
+- Windows (x64) only
+- Does not use your Steam save (it can be very easily migrated though, see [below](#migrate-steam-save))
+- Absolutely abhorrent code (such as passing a window handle into an environment variable)
+
+Additionally, the game needs to be slightly patched to account for a few things inherent to the way the game is run; a patcher is included in this project in order to automatically do that. Details about the patches can be found [below](#patches).
+
+## Quick start
+
+**You need a legitimate Steam copy of the game to use this.**
+- Download the latest release and patcher from the [Releases](https://github.com/SayakaIsBaka/love-vst/releases) page
+- Copy the `Balatro.exe` file from your copy of the game somewhere and drag it into the `patcher.exe` file. A `Balatro.love` file will be generated, which is the patched game
+- Copy `Balatro.vst3` and `Balatro.love` into your VST folder. Both files must be in the same folder
+
+## Build
+
+Follow the instructions from the [original README](#compilation). A modified `CMakeLists.txt` file for the `megasource` repository is also included here as `CMakeLists.txt.megasource`, allowing to include all dependencies as static libraries.
+
+## Patches
+
+The following patches are needed in order for the game to work properly:
+- Remove Steam integration
+- Properly stop all threads from running when exiting the game
+
+The included patcher can do these automatically, its source code is also included in the repository in the `patcher` folder.
+
+## Migrate Steam save
+
+To migrate your Steam save in order to use it in this, just copy the `%appdata%\Balatro` folder inside the `%appdata%\LOVE` folder (create it if it does not exist).
+
+---
+
 LÖVE is an *awesome* framework you can use to make 2D games in Lua. It's free, open-source, and works on Windows, macOS, Linux, Android, and iOS.
 
 [![Build Status: Github CI](https://github.com/love2d/love/workflows/continuous-integration/badge.svg)](https://github.com/love2d/love/actions?query=workflow%3Acontinuous-integration)

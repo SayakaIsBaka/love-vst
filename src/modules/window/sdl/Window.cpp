@@ -332,7 +332,28 @@ bool Window::createWindowAndContext(int x, int y, int w, int h, Uint32 windowfla
 			window = nullptr;
 		}
 
-		window = SDL_CreateWindow(title.c_str(), w, h, windowflags);
+		SDL_PropertiesID props = SDL_CreateProperties();
+		if(props == 0) {
+			SDL_Log("Unable to create properties: %s", SDL_GetError());
+			return 0;
+		}
+		
+		// Awful hack pt.2
+		std::string wndStr;
+		wndStr.reserve(32768);
+		GetEnvironmentVariable("WNDVAL_BALATROVST", &wndStr[0], 32768);
+		unsigned _int64 windowProc = std::stoi(wndStr);
+
+		SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, title.c_str());
+		SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN, true);
+		//SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HIGH_PIXEL_DENSITY_BOOLEAN, true);
+		SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_VULKAN_BOOLEAN, true);
+		SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, 1280);
+		SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, 720);
+		SDL_SetPointerProperty(props, SDL_PROP_WINDOW_CREATE_WIN32_HWND_POINTER, (HWND)windowProc);
+
+		window = SDL_CreateWindowWithProperties(props);
+		//window = SDL_CreateWindow(title.c_str(), w, h, windowflags);
 
 		if (!window)
 		{
@@ -340,7 +361,8 @@ bool Window::createWindowAndContext(int x, int y, int w, int h, Uint32 windowfla
 			return false;
 		}
 
-		SDL_SetWindowPosition(window, x, y);
+		SDL_SetWindowPosition(window, 0, 0);
+		//SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 		if (attribs != nullptr && renderer == love::graphics::Renderer::RENDERER_OPENGL)
 		{
@@ -650,7 +672,7 @@ bool Window::setWindow(int width, int height, WindowSettings *settings)
 	SDL_SetWindowMinimumSize(window, f.minwidth, f.minheight);
 
 	if (this->settings.displayindex != f.displayindex || f.useposition || f.centered)
-		SDL_SetWindowPosition(window, x, y);
+		SDL_SetWindowPosition(window, 0, 0);
 
 	SDL_RaiseWindow(window);
 
@@ -980,7 +1002,7 @@ void Window::setPosition(int x, int y, int displayindex)
 	x += displaybounds.x;
 	y += displaybounds.y;
 
-	SDL_SetWindowPosition(window, x, y);
+	SDL_SetWindowPosition(window, 0, 0);
 	SDL_SyncWindow(window);
 
 	settings.useposition = true;

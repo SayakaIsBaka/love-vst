@@ -1911,7 +1911,7 @@ if(MINGW)
 	set(CMAKE_RC_FLAGS ${CMAKE_RC_FLAGS} "-c 65001 --preprocessor-arg=-finput-charset=UTF-16LE")
 endif()
 
-add_library(liblove SHARED
+add_library(liblove STATIC
 	src/modules/love/love.cpp
 	src/modules/love/love.h
 	# These are here so they show up in Visual Studio:
@@ -1985,8 +1985,8 @@ love_group_projects(NAME "lovedep" TARGETS lua51 alcommon al-excommon harfbuzz-s
 
 
 if(MSVC)
-	set_target_properties(liblove PROPERTIES RELEASE_OUTPUT_NAME "love" PDB_NAME "liblove" IMPORT_PREFIX "lib")
-	set_target_properties(liblove PROPERTIES DEBUG_OUTPUT_NAME "love" PDB_NAME "liblove" IMPORT_PREFIX "lib")
+	#set_target_properties(liblove PROPERTIES RELEASE_OUTPUT_NAME "love" PDB_NAME "liblove" IMPORT_PREFIX "lib")
+	#set_target_properties(liblove PROPERTIES DEBUG_OUTPUT_NAME "love" PDB_NAME "liblove" IMPORT_PREFIX "lib")
 endif()
 
 if(MSVC OR MINGW)
@@ -2000,6 +2000,26 @@ if(MSVC OR MINGW)
 		extra/windows/love.rc
 		extra/windows/love.ico
 	)
+endif()
+
+#
+# love (VST)
+#
+if (WIN32)
+    add_library(balatro_vst3 MODULE
+        src/love_vst.cpp
+        src/cplug/cplug_vst3.c
+    )
+	target_link_libraries(balatro_vst3 liblove)
+    set_target_properties(balatro_vst3 PROPERTIES
+        BUNDLE True
+        BUNDLE_EXTENSION vst3
+        OUTPUT_NAME Balatro                                             # out binary name, differs from target name
+        CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Balatro.vst3 # out directory name, differs from target name
+        SUFFIX .vst3
+        PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Balatro.vst3
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Balatro.vst3/Contents/x86_64-win
+    )
 endif()
 
 #
