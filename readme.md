@@ -12,7 +12,7 @@ As this was mostly made as a proof of concept and for [shitposting purposes](htt
 - Audio does not go through the DAW
 - Windows (x64) only
 - Does not use your Steam save (it can be very easily migrated though, see [below](#migrate-steam-save))
-- Absolutely abhorrent code (such as passing a window handle into an environment variable)
+- Absolutely abhorrent code (such as passing a window handle into an environment variable), which probably means tons of bugs / crashes, you have been warned
 
 Additionally, the game needs to be slightly patched to account for a few things inherent to the way the game is run; a patcher is included in this project in order to automatically do that. Details about the patches can be found [below](#patches).
 
@@ -22,6 +22,8 @@ Additionally, the game needs to be slightly patched to account for a few things 
 - Download the latest release and patcher from the [Releases](https://github.com/SayakaIsBaka/love-vst/releases) page
 - Copy the `Balatro.exe` file from your copy of the game somewhere and drag it into the `patcher.exe` file. A `Balatro.love` file will be generated, which is the patched game
 - Copy `Balatro.vst3` and `Balatro.love` into your VST folder. Both files must be in the same folder
+
+It is also recommended to set the game's Window Mode as Borderless for the best experience. Remove the instance of the game and add a new one for it to properly take effect.
 
 ## Build
 
